@@ -28,10 +28,11 @@ public class StudentLogin extends HttpServlet {
         String password = (String) request.getAttribute("password");
         String userType = "student";
         String id = null;
+        String action = "login";
         
 		try {
 			conn = Database.getConnection();
-			statement = conn.prepareStatement("select * from users where email = ? and password = ? ");
+			statement = conn.prepareStatement("select * from students where email = ? and password = ? ");
 			statement.setString(1, email);
 			statement.setString(2, password);
 			
@@ -42,20 +43,20 @@ public class StudentLogin extends HttpServlet {
 				id = rs.getString("id");
 				
 				if(rs.getBoolean("blocked")) {
-					Report.loginReport(conn, email, id, userType, "Login", "Account Blocked");
+					Report.report(conn, email, id, userType, action, "Account Blocked");
 					
 					request.setAttribute("blocked", true);
 					RequestDispatcher rd = request.getRequestDispatcher("/studentLogin.jsp");
 					rd.forward(request, response);
 				} else if(!rs.getBoolean("verified")) {
-					Report.loginReport(conn, email, id, userType, "Login", "Account Not Verified");
+					Report.report(conn, email, id, userType, action, "Account Not Verified");
 					
 					request.setAttribute("verified", false);
 					RequestDispatcher rd = request.getRequestDispatcher("/studentLogin.jsp");
 					rd.forward(request, response);
 				} else {
 					
-					Report.loginReport(conn, email, id, userType, "Login", "Successful");
+					Report.report(conn, email, id, userType, action, "Successful");
 					
 					request.setAttribute("verified", true);
 					
@@ -70,7 +71,7 @@ public class StudentLogin extends HttpServlet {
 					rd.forward(request, response);
 				}
 			} else {
-				Report.loginReport(conn, email, id, userType, "Login", "Unsuccessful");
+				Report.report(conn, email, id, userType, action, "Unsuccessful");
 				
 				request.setAttribute("error", "Check the login credentials and try again.");
 				RequestDispatcher rd = request.getRequestDispatcher("/studentLogin.jsp");
@@ -83,5 +84,4 @@ public class StudentLogin extends HttpServlet {
             Database.closeConnection(conn);
         }
 	}
-
 }
