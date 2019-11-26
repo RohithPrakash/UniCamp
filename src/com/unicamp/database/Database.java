@@ -8,10 +8,10 @@ public class Database {
 	public static Connection getConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		
         String url = "jdbc:mysql://localhost:3306/";
-        String database = "UniCamp";
+        String database = "unicamp";
         String driver = "com.mysql.jdbc.Driver";
         String username = "root";
-        String password = "password";
+        String password = "root";
 
         Class.forName(driver).newInstance();
         Connection conn = DriverManager.getConnection(url + database, username, password);
